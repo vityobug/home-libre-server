@@ -6,7 +6,7 @@ This guide is written from zero by me Vitaly Bugaychuk. Only free and open sourc
 The goal here is to move away from the cloud services, collecting data about you (for example Google) and self-host all cloud services on your own spare machine.
 I'm calling it server, but it could be any machine with 2 gigabytes of RAM or more.
 Yes, you can run all this on a Raspberry Pi, with a few tweaks of course.
-I'll try to make this as clear as possible, so even beginners can make use of all this.
+I'll try to make this as clear as possible, so even beginners can make use of this aweasomeness!
 
 We'll run the following services at home.
   * [Database server](https://www.postgresql.org/) - we'll need this for nextcloud. 
