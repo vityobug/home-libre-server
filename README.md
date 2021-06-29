@@ -68,7 +68,7 @@ USERDIR="/srv/dev-disk-by-uuid-fbda1d19-be42-458f-95c0-835183fd73f6/"
 7. Once you start all the services you'll be able to 
  * Access nextcloud from https://nextcloud.example.com and the rest of the services on their described ports.
  * The let's encrypt bot will get the needed certificates and will auto-update them prior expiry.
- * You will be free of google's services
+ * You will be free of google's spying services
  * You will have your own media server and
  * DNS server that blocks ads and your own O365 with calling.
    Make sure to use your DNS, by adding a single entry of your server's IP address to your router's DHCP. 
