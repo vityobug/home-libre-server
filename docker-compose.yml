@@ -1,0 +1,155 @@
+version: '3'
+
+services:
+  nextcloud_db:
+    image: postgres:alpine
+    restart: always
+    container_name: nextcloud_postgres
+    volumes:
+      - /docker_ssd/db:/var/lib/postgresql/data  #container data is placed on an SSD for faster loading times /docker_ssd/db is the path on the host and the rest after : is path inside the container
+    env_file:
+      - db.env #environmental variables, your username and password goes here
+
+  nextcloud_app:
+    image: nextcloud:apache
+    restart: always
+    container_name: nextcloud_apache
+    volumes:
+      - ${USERDIR}/docker/volumes/nextcloud_data:/var/www/html #path to the user data (make sure to backup this folder)
+    environment:
+      - TRUSTED_PROXIES=172.16.0.0/12 #network of the reverse proxy, change this to your network range
+      - VIRTUAL_HOST=nextcloud.example.com #FQDN - the domain that the nextcloud  will be accessed from
+      - LETSENCRYPT_HOST=nextcloud.example.com #same as above, needed for certificate generaiton
+      - LETSENCRYPT_EMAIL=youremail@protonmail.com #your email, so you'll get notified in case the certbot cannot update your certificate
+      - POSTGRES_HOST=nextcloud_db #the database hostname
+      - TZ=${TZ} #timezone for timestamps
+    env_file:
+      - db.env #username and password for the database is read from here
+    depends_on:
+      - nextcloud_db #start the container only after the database is up and running
+    networks:
+      - proxy-tier #shared network with the reverse proxy
+      - default
+######
+  proxy:
+    build: ./proxy #we have the Dockerfile in this dir, to build this container
+    restart: always
+    container_name: nginx_proxy
+    ports:
+      - 80:80 #all requests will hit your proxy initially, it's the gateway for all the services
+      - 443:443 #same as above, but used for secure connections
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    volumes:
+      - ${USERDIR}/docker/volumes/proxy_certs:/etc/nginx/certs:ro #certificates dir
+      - ${USERDIR}/docker/volumes/proxy_vhost.d:/etc/nginx/vhost.d #virtual hosts dir
+      - ${USERDIR}/docker/volumes/proxy_html:/usr/share/nginx/html #nginx server dir
+      - ${USERDIR}/docker/volumes/proxy_dhparam:/etc/nginx/dhparam #dhparam folder
+      - /var/run/docker.sock:/tmp/docker.sock:ro #needed to listen for newly created containers and proxy any connections
+    networks:
+      - proxy-tier
+######
+  letsencrypt-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    container_name: nginx_proxy_companion
+    volumes:
+      - ${USERDIR}/docker/volumes/proxy_certs:/etc/nginx/certs #certificates dir, shared with proxy
+      - ${USERDIR}/docker/volumes/proxy_vhost.d:/etc/nginx/vhost.d #virtual hosts dir, shared with proxy
+      - ${USERDIR}/docker/volumes/proxy_html:/usr/share/nginx/html #nginx dir shared with proxy
+      - /var/run/docker.sock:/var/run/docker.sock:ro #docker socket for communication with other containers
+    networks:
+      - proxy-tier
+    depends_on:
+      - proxy #to start only if the proxy container is online
+######
+  jellyfin:
+    container_name: "jellyfin"
+    image: jellyfin/jellyfin
+    restart: always
+    user: 1000:994 # this will have it's own user, it will not like running as the root BTW
+    volumes:
+      - /docker_ssd/jellyfin/config:/config #configuration is on the SSD
+      - /docker_ssd/jellyfin/cache:/cache #cached images and metadata is also on SSD for faster loading of the library
+      - /srv/dev-disk-by-uuid-fbda1d19-be42-458f-95c0-835183fd73f6/media:/media #media dir on one hard drive, change this to the path of your media
+      - /srv/dev-disk-by-uuid-561e8dc2-e4dd-436f-a2f6-9db49aac6e1a/media:/media #media dir on the second hard drive, you can remove this if you have a single disk
+    ports: # ports necessary for the streaming to work in your LAN
+      - 8096:8096
+      - 8920:8920
+      - 1900:1900
+      - 7359:7359
+    networks:
+      - proxy-tier # we must be connected to the same network as the proxy in order to be able to access the service with encryption
+    environment: # the following 4 lines are used by the reverse proxy, make sure to change domains and email
+      - VIRTUAL_HOST=jellyfin.example.com 
+      - VIRTUAL_PORT=8096
+      - LETSENCRYPT_HOST=jellyfin.example.com
+      - LETSENCRYPT_EMAIL=youremail@protonmail.com
+
+######
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp" # port for DNS
+      - "53:53/udp" # port for DNS
+      - "67:67/udp" # port for DHCP
+      - "9080:80/tcp" # port for web management through yourhost:9080
+      - "8443:443/tcp" # same as above, but for SSL
+    environment:
+      TZ: 'Europe/Sofia' # you can use the environmental variaables or set the Time-zone manually
+      WEBPASSWORD: 'THIS WILL BE YOUR WEB PASSWORD, CHANGE WHATEVER IN THE QUOTES'
+      DNS1: 172.31.255.1 # pihole will use this as the primary DNS resource
+      DNS2: 1.1.1.1 # will use this as the secondary DNS server for resolving queries
+    # Volumes store your data between container upgrades
+    volumes:
+      - '${USERDIR}/docker/pihole/etc-pihole/:/etc/pihole/'
+      - '${USERDIR}/docker/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      - pihole
+######
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9000:9000" #access your portainer on this port
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${USERDIR}/docker/portainer/data:/data
+      - ${USERDIR}/docker/shared:/shared
+    environment:
+      - TZ=${TZ}
+######
+  qbittorrent:
+    image: "linuxserver/qbittorrent"
+    container_name: "qbittorrent"
+    #Vomumes of qBittorrent are shared with jellyfin, when media is downloaded it is indexed by jellyfin and ready for playback
+    #qBittorrent also support VPNs, which I will not cover. I will not advise to download any illegal content.
+    volumes:
+      - ${USERDIR}/docker/qbittorrent:/config #config dir
+      - ${USERDIR}/media/movies:/movies #movies volume
+      - ${USERDIR}/media/tv:/tv #tv volume
+      - ${USERDIR}/media/music:/music #music volume
+    ports:
+      - "8081:8081" 
+      - "6881:6881"
+      - "6881:6881/udp"
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=002
+      - WEBUI_PORT=8081 #access the torrent web GUI on this port on your LAN
+######
+networks:
+  proxy-tier:
+  pihole:
+    external: true
