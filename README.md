@@ -75,5 +75,8 @@ USERDIR="/srv/dev-disk-by-uuid-fbda1d19-be42-458f-95c0-835183fd73f6/"
    For example if your server address is 172.16.1.2 then your DHCP should handle this IP address as the DNS server for your LAN.
  * You can get a torrent with any media and once it's finished downloading it can be indexed and ready to waych in your Jellyfin, just like your own Netflix
    To achieve this add those same directories to the Jellyfin Library.
+   
+ 8. BACKUP your information on regular bases
+  * I use rsyc for the purpose, but you can user whatever tool that you're comfortable with
 
 This is version 1.01 of the guide and docker-compose.yaml. Updates will be applied after further testing this on a bare-bone server.
