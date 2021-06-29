@@ -65,5 +65,11 @@ USERDIR="/srv/dev-disk-by-uuid-fbda1d19-be42-458f-95c0-835183fd73f6/"
 6. Run the following command to start all the services
 ``docker-compose -f docker-compose.yml up``
 
+7. Once you start all the services you'll be able to access nextcloud from https://nextcloud.example.com and the rest of the services on their described ports.
+The let's encrypt bot will get the needed certificates and will auto-update them prior expiry.
+You will be free of google's services and will have your own media server, dns server that blocks ads and your own O365 with calling.
+Make sure to use your DNS, by adding a single entry of your server's IP address to your router's DHCP. 
+  For example if your server address is 172.16.1.2 then your DHCP should handle this IP address as the DNS server for your LAN.
+  
 
 This is version 1 of the guide and docker-compose.yaml. Updates will be applied after further testing this on a bare-bone server.
