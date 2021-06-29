@@ -7,6 +7,7 @@ The goal here is to move away from the cloud services, collecting data about you
 I'm calling it server, but it could be any machine with 2 gigabytes of RAM or more.
 Yes, you can run all this on a Raspberry Pi, with a few tweaks of course.
 I'll try to make this as clear as possible, so even beginners can make use of this aweasomeness!
+I assume you'll know how to configure port forwarding on your router to make this work.
 
 We'll run the following services at home.
   * [Database server](https://www.postgresql.org/) - we'll need this for nextcloud. 
