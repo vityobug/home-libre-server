@@ -64,7 +64,7 @@ I would stongly recommend to sync the data off-site in case of a catastrofic eve
 5. Navigate to the dir and change the necessary entries in the db.env file as well as in the docker-compose.yml
 
 6. Run the following command to start all the services
-``docker-compose -f docker-compose.yml up``
+``docker-compose -f docker-compose.yml up -d``
 
 7. Add DNS A-records to each service inside the webGUI of PiHole
 
@@ -91,3 +91,5 @@ I would stongly recommend to sync the data off-site in case of a catastrofic eve
   * I use rsyc for the purpose, but you can use any tool you feel comfortable working with.
 
 This is version 1.06 of the guide and docker-compose.yaml. Updates will be applied after further testing this on a bare-bone server.
+
+To update all the software in the future use the command ``docker-compose -f docker-compose.yml pull`` and ``docker-compose -f docker-compose.yml up -d``
