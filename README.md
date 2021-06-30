@@ -27,8 +27,8 @@ The CPU I'm using is Intel's 3rd gen i5.
 Not the best, but it's small, cool and quiet!
 The disks are up to you. Use drives as big as you like.
 As an Operating System I'll be using Debian Buster base, but you can use whatever you desire.
-I would recommend to purchase a domain, otherwise you can make one up and use the /etc/hosts file on each of your machines to access services, or by IP address (will not work with SSL)
-We'll use example.com as our domain, change it to your purchased domain name.
+I would recommend to purchase a domain, otherwise you can make one up and use pihole and add that as a DNS record to access services locally, I will not recommmend to use IP address instead it will not work with SSL.
+We'll use example.com as our domain, change it to your own domain name.
 
 ## Few tips
 
