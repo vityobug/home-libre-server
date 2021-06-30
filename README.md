@@ -12,7 +12,7 @@ I assume you'll know how to configure port forwarding on your router to make thi
 We'll run the following services at home.
   * [PostgreSQL Database server](https://www.postgresql.org/) - we'll need this for nextcloud. 
   * [Nextcloud](https://nextcloud.com/) instance - Home/work cloud server, an alternative to O365, Google suite etc. Calendar and [WebDav](https://en.wikipedia.org/wiki/WebDAV) Ah, and almost forgot. Collaboration (audio/video/chat and collaboration on documents inside your web browser). Everything encrypted with TLS.
-  * [Proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) - an Nginx reverce proxy, so we can run multiple services behind a single IP/domain.
+  * [Reverse Proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) - an Nginx reverce proxy, so we can run multiple services behind a single IP/domain.
   * [Letsencrypt-Companion](https://hiqdev.com/packages/docker-letsencrypt-nginx-proxy-companion/) - a bot that monitors all SSL/TLS cetfificates and updates them if needed.
   * [Jellyfin](https://jellyfin.org/) - media streaming service, so you can watch all your TV Series, movies on you TV and devices. As well as stream your music library. Just like Plex, although no account is needed, nor any information is collected about you. Just the way I like it.
   * [qBittorrent](https://www.qbittorrent.org/) - Torrent clint with a web GUI.
