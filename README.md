@@ -90,4 +90,4 @@ I would stongly recommend to sync the data off-site in case of a catastrofic eve
 11. BACKUP your information on regular bases
   * I use rsyc for the purpose, but you can use any tool you feel comfortable working with.
 
-This is version 1.01 of the guide and docker-compose.yaml. Updates will be applied after further testing this on a bare-bone server.
+This is version 1.06 of the guide and docker-compose.yaml. Updates will be applied after further testing this on a bare-bone server.
