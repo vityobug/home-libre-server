@@ -46,13 +46,13 @@ I would stongly recommend to sync the data off-site in case of a catastrofic eve
 2. Make sure your system is up to date and you have installed [Docker](https://docs.docker.com/engine/install/debian/) and [docker-compose](https://docs.docker.com/compose/install/)
 
 3. We define some variables on the HOST inside /etc/environment
-``
-TZ="Europe/Sofia"
-PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
-PUID=1000
-PGID=994
-USERDIR="/srv/dev-disk-by-uuid-fbda1d19-be42-458f-95c0-835183fd73f6/"
-``
+
+``TZ="Europe/Sofia"``
+``PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"``
+``PUID=1000``
+``PGID=994``
+``USERDIR="/srv/dev-disk-by-uuid-fbda1d19-be42-458f-95c0-835183fd73f6/"``
+
   TZ must be your local [time-zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) \
   PATH is the exec path for Debian buster, please reffer to your distro's bin folders if needed. You may already have this predefined. \
   PUID is your user ID, or docker dedicated user \
