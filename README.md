@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This guide is written from zero by Vitaly Bugaychuk. Only free and open source software is used.
+This guide is written from zero by me. Only free and open source software is used.
 The goal here is to move away from the cloud services, collecting data about you. Self-host all cloud services on your own spare machine.
 I'm calling it server, but it could be any machine with 2 gigabytes of RAM or more.
 Yes, you can run all this on a Raspberry Pi, with a few tweaks of course.
